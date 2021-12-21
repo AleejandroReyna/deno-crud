@@ -3,7 +3,8 @@ import {
     home
 } from '../controllers/pagesController.ts'
 import {
-    getMovies
+    getMovies,
+    getMovie
 } from '../controllers/moviesController.ts'
 
 const Router = new oakRouter()
@@ -11,5 +12,6 @@ const Router = new oakRouter()
 Router
     .get("/", home)
     .get("/api/movies", getMovies)
+    .get("/api/movies/:id", getMovie)
 
 export { Router }
