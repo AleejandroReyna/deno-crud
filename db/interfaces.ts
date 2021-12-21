@@ -1,3 +1,4 @@
+// This interface defines the DB table "movies" register
 export interface Movie {
     id?: number,
     name: string,
