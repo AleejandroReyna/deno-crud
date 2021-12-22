@@ -4,7 +4,8 @@ import {
 } from '../controllers/pagesController.ts'
 import {
     getMovies,
-    getMovie
+    getMovie,
+    createMovie
 } from '../controllers/moviesController.ts'
 
 const Router = new oakRouter()
@@ -13,5 +14,6 @@ Router
     .get("/", home)
     .get("/api/movies", getMovies)
     .get("/api/movies/:id", getMovie)
+    .post("/api/movies", createMovie)
 
 export { Router }
