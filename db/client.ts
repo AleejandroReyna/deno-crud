@@ -1,8 +1,7 @@
-import { Client as dbClient } from "https://deno.land/x/mysql/mod.ts";
-import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { dotenv, Client as dbClient  } from "../depts.ts";
 
 // Get config enviroment variables
-const { HOSTNAME, USERNAME, DB, PASSWORD } = config();
+const { HOSTNAME, USERNAME, DB, PASSWORD } = dotenv.config();
 
 // Generate and export default MySQL client
 export const Client = await new dbClient().connect({
