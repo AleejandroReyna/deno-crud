@@ -6,7 +6,8 @@ import {
     getMovies,
     getMovie,
     createMovie,
-    updateMovie
+    updateMovie,
+    deleteMovie
 } from '../controllers/moviesController.ts'
 
 const Router = new oakRouter()
@@ -17,5 +18,6 @@ Router
     .get("/api/movies/:id", getMovie)
     .post("/api/movies", createMovie)
     .put("/api/movies/:id", updateMovie)
+    .delete("/api/movies/:id", deleteMovie)
 
 export { Router }
