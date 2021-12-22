@@ -1,9 +1,8 @@
-import { Application } from "https://deno.land/x/oak/mod.ts";
-import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { Application, dotenv } from "./depts.ts";
 import { Router } from "./config/router.ts"
 
 // Get config enviroment variables
-const { PORT } = config();
+const { PORT } = dotenv.config();
 
 // Define App for server
 const app : Application = new Application();
