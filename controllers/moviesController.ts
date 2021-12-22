@@ -34,7 +34,7 @@ const getMovie = async ({params, response} : {params : {id: string}, response : 
 // Route for Create a Movie
 const createMovie = async({request, response} : {request : Request, response : Response}) => {
     const body = request.body()
-    let data : Record<string, string> = {
+    let data : Movie = {
         name: "",
         description: ""
     }
@@ -55,7 +55,8 @@ const createMovie = async({request, response} : {request : Request, response : R
     
     const result = await Client.execute(`INSERT INTO movies (name, description) VALUES(?, ?)`,
                                   [data.name, data.description])
-    const returnData : Movie[] = await Client.query("select ?? from ?? where id = ?",["*", "movies", result.lastInsertId]);
+    const returnData : Movie[] = await Client.query("select ?? from ?? where id = ?",
+                                                    ["*", "movies", result.lastInsertId]);
     response.body = {
         status: true,
         data: returnData[0]
@@ -67,7 +68,7 @@ const updateMovie = async({params, request, response} :
                           {params: {id: string}, request : Request, response : Response}) => {
     const body = request.body()
     const { id } = params
-    let data : Record<string, string> = {
+    let data : Movie = {
         name: "",
         description: ""
     }
@@ -88,12 +89,32 @@ const updateMovie = async({params, request, response} :
 
     const result = await Client.execute(`UPDATE movies SET name = ?, description = ? WHERE id = ?`, 
                                         [data.name, data.description, id])
-    const returnData : Movie[] = await Client.query("select ?? from ?? where id = ?",["*", "movies", id]);
-    console.log(result)
+    const returnData : Movie[] = await Client.query("select ?? from ?? where id = ?",
+                                                    ["*", "movies", id]);
     response.body = {
         status: true,
         data: returnData[0]
     }
 }
 
-export { getMovies, getMovie, createMovie, updateMovie }
+// Route for delete a Movie
+const deleteMovie = async ({params, response} : {params : {id: string}, response : Response}) => {
+    const { id } = params
+    let result = await Client.execute(`delete from movies where id = ?`, [id]);
+    if(result.affectedRows) {
+        response.body = {
+            status: true,
+            data: {
+                id
+            }
+        }
+        return 
+    }
+    response.status = 404
+    response.body = {
+        status: false,
+        error: "Movie not found"
+    }
+}
+
+export { getMovies, getMovie, createMovie, updateMovie, deleteMovie }
