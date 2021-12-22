@@ -1,4 +1,4 @@
-import { Response } from "https://deno.land/x/oak/mod.ts";
+import { Response, Request } from "https://deno.land/x/oak/mod.ts";
 import { Client } from "../db/client.ts"
 import { Movie } from "../db/interfaces.ts"
 
@@ -31,4 +31,35 @@ const getMovie = async ({params, response} : {params : {id: string}, response : 
     }
 }
 
-export { getMovies, getMovie }
+// Route for Create a Movie
+const createMovie = async({request, response} : {request : Request, response : Response}) => {
+    const body = request.body()
+    let data : Record<string, string> = {
+        name: "",
+        description: ""
+    }
+    if(!body.type) {
+        return response.body = {
+            status: false,
+            error: "no data"
+        }
+    }
+    if(body.type == "form-data") {
+        const value = await body.value
+        const read = await value.read()
+        data = {...data, ...read.fields};
+    } else {
+        const value = await body.value
+        data = {...data, ...JSON.parse(value)}
+    }
+    
+    const result = await Client.execute(`INSERT INTO movies (name, description) VALUES(?, ?)`,
+                                  [data.name, data.description])
+    const returnData = await Client.query("select ??,name from ?? where id = ?",["*", "movies", result.lastInsertId]);
+    response.body = {
+        status: true,
+        data: returnData[0]
+    }
+}
+
+export { getMovies, getMovie, createMovie }
