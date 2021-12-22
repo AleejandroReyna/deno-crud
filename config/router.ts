@@ -1,4 +1,4 @@
-import { Router as oakRouter } from "https://deno.land/x/oak/mod.ts";
+import { Router as oakRouter } from "../depts.ts";
 import {
     home
 } from '../controllers/pagesController.ts'
