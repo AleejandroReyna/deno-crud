@@ -1,4 +1,4 @@
-import { Response } from "https://deno.land/x/oak/mod.ts";
+import { Response } from "../depts.ts";
 
 // home route
 export const home = (({ response } : {response : Response}) => {

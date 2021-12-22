@@ -1,4 +1,4 @@
-import { Response, Request } from "https://deno.land/x/oak/mod.ts";
+import { Request, Response } from "../depts.ts";
 import { Client } from "../db/client.ts"
 import { Movie } from "../db/interfaces.ts"
 
