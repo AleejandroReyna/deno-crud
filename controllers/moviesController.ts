@@ -1,10 +1,12 @@
 import { Request, Response } from "../depts.ts";
 import { Client } from "../db/client.ts"
 import { Movie } from "../db/interfaces.ts"
+import { MoviesService } from '../services/moviesService.ts'
 
 // Route for Get Movies 
 const getMovies = async ({ response }: { response : Response }) => {
-    const data : Movie[] = await Client.query("select * from movies;")
+    let service = new MoviesService()
+    const data : Movie[] = await service.getItems()
     response.body = {
         status: true,
         data
