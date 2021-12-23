@@ -16,14 +16,12 @@ const getMovies = async ({ response }: { response : Response }) => {
 // Route for Get Movie
 const getMovie = async ({params, response} : {params : {id: string}, response : Response }) => {
     const { id } = params
-    const data : Movie[] = await Client.query(
-        "select ?? from ?? where id = ?",
-        ["*", "movies", id],
-        );
-    if(data.length) {    
+    let service = new MoviesService()
+    const data : Movie | null = await service.getItem(id)
+    if(data) {    
         response.body = {
             status: true,
-            data: data[0]
+            data
         }
     } else {
         response.status = 404
