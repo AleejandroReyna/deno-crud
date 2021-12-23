@@ -6,7 +6,7 @@ import {
     Client 
 } from "../db/client.ts"
 
-export abstract class ModelService implements ModelInterface, GetterModelInterface {
+export abstract class ModelService implements GetterModelInterface {
     abstract table : string
     
     async getItems() : Promise<any[]> {
@@ -14,7 +14,8 @@ export abstract class ModelService implements ModelInterface, GetterModelInterfa
         return data
     }
 
-    async getItem() : Promise<any>{
-        return {}
+    async getItem(id : string | number ) : Promise<any> {
+        const data : any = await Client.query(`select * from ${this.table} where id = ?`, [id])
+        return data.length ? data[0] : null
     }
 }
