@@ -16,7 +16,7 @@ const getMovies = async ({ response }: { response : Response }) => {
 // Route for Get Movie
 const getMovie = async ({params, response} : {params : {id: string}, response : Response }) => {
     const { id } = params
-    let service = new MoviesService()
+    const service = new MoviesService()
     const data : Movie | null = await service.getItem(id)
     if(data) {    
         response.body = {
@@ -34,33 +34,38 @@ const getMovie = async ({params, response} : {params : {id: string}, response : 
 // Route for Create a Movie
 const createMovie = async({request, response} : {request : Request, response : Response}) => {
     const body = request.body()
-    let data : Movie = {
-        name: "",
-        description: ""
-    }
+    const service = new MoviesService()
+    let params : any;
     if(!body.type) {
         return response.body = {
             status: false,
             error: "no data"
         }
     }
+    
     if(body.type == "form-data") {
         const value = body.value
         const read = await value.read()
-        data = {...data, ...read.fields};
+        params = {...read.fields};
     } else {
         const value = await body.value
-        data = {...data, ...JSON.parse(value)}
+        params = {...JSON.parse(value)}
+    }
+
+    let data = await service.createItem(params)
+    if(data) {
+        return response.body = {
+            status: true,
+            data
+        }
     }
     
-    const result = await Client.execute(`INSERT INTO movies (name, description) VALUES(?, ?)`,
-                                  [data.name, data.description])
-    const returnData : Movie[] = await Client.query("select ?? from ?? where id = ?",
-                                                    ["*", "movies", result.lastInsertId]);
+    response.status = 400
     response.body = {
-        status: true,
-        data: returnData[0]
+        status: false,
+        error: "Invalid params"
     }
+    
 }
 
 // Route for update a Movie
