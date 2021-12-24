@@ -13,4 +13,17 @@ export class ResponseService {
             data
         }
     }
+
+    async responseSingleData(data : any) {
+        if(data) {
+            return this.response.body = {
+                status: true,
+                data
+            }
+        }
+        this.response.status = 404
+        return this.response.body = {
+            status: false
+        }
+    }
 }
