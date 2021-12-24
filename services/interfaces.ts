@@ -11,3 +11,7 @@ export interface CreatorModelInterface extends ModelInterface {
     readonly defaultItem : any
     createItem( item: any ) : Promise<any>
 }
+
+export interface UpdaterModelInterface extends CreatorModelInterface {
+    updateItem(id: string | number, item: any) : Promise<any>
+}
