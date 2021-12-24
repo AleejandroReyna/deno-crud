@@ -42,7 +42,7 @@ const createMovie = async({request, response} : {request : Request, response : R
             error: "no data"
         }
     }
-    
+
     if(body.type == "form-data") {
         const value = body.value
         const read = await value.read()
@@ -72,11 +72,9 @@ const createMovie = async({request, response} : {request : Request, response : R
 const updateMovie = async({params, request, response} : 
                           {params: {id: string}, request : Request, response : Response}) => {
     const body = request.body()
+    const service = new MoviesService()
     const { id } = params
-    let data : Movie = {
-        name: "",
-        description: ""
-    }
+    let _params : any
     if(!body.type) {
         return response.body = {
             status: false,
@@ -86,19 +84,24 @@ const updateMovie = async({params, request, response} :
     if(body.type == "form-data") {
         const value = body.value
         const read = await value.read()
-        data = {...data, ...read.fields};
+        _params = {...read.fields};
     } else {
         const value = await body.value
-        data = {...data, ...JSON.parse(value)}
+        _params = {...JSON.parse(value)}
     }
+    let data = await service.updateItem(id, _params)
 
-    const result = await Client.execute(`UPDATE movies SET name = ?, description = ? WHERE id = ?`, 
-                                        [data.name, data.description, id])
-    const returnData : Movie[] = await Client.query("select ?? from ?? where id = ?",
-                                                    ["*", "movies", id]);
+    if(data) {
+        return response.body = {
+            status: true,
+            data
+        }
+    }
+    
+    response.status = 400
     response.body = {
-        status: true,
-        data: returnData[0]
+        status: false,
+        error: "Invalid params"
     }
 }
 
