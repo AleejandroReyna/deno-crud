@@ -1,13 +1,13 @@
 import { 
     ModelInterface,
     GetterModelInterface,
-    CreatorModelInterface
+    UpdaterModelInterface
 } from './interfaces.ts'
 import { 
     Client 
 } from "../db/client.ts"
 
-export abstract class ModelService implements GetterModelInterface, CreatorModelInterface {
+export abstract class ModelService implements GetterModelInterface, UpdaterModelInterface {
     abstract table : string
     abstract defaultItem : any
     
@@ -30,6 +30,20 @@ export abstract class ModelService implements GetterModelInterface, CreatorModel
         if(result) {
             if(result.affectedRows && result.lastInsertId) {
                 return await this.getItem(result.lastInsertId)
+            }
+        }
+        return null
+    }
+
+    async updateItem(id : string | number, item : any ) : Promise<any> {
+        const requestObject = {...this.defaultItem, ...item}
+        const columns = Object.keys(requestObject)
+        const values = [...Object.values(requestObject), id]
+        const request = `UPDATE ${this.table} SET ${columns.map(_c => `${_c} = ?`).join(', ')} WHERE id = ?`
+        const result = await Client.execute(request, values)
+        if(result) {
+            if(result.affectedRows) {
+                return await this.getItem(id)
             }
         }
         return null
