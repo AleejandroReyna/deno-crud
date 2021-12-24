@@ -13,20 +13,9 @@ const getMovies = async ({ response }: { response : Response }) => {
 
 // Route for Get Movie
 const getMovie = async ({params, response} : {params : {id: string}, response : Response }) => {
-    const { id } = params
     const service = new MoviesService()
-    const data : Movie | null = await service.getItem(id)
-    if(data) {    
-        response.body = {
-            status: true,
-            data
-        }
-    } else {
-        response.status = 404
-        response.body = {
-            status: false
-        }
-    }
+    let responseService = new ResponseService(response)
+    return responseService.responseSingleData(await service.getItem(params.id))
 }
 
 // Route for Create a Movie
