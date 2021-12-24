@@ -7,3 +7,7 @@ export interface GetterModelInterface extends ModelInterface {
     getItem(id: string | number) : Promise<any>
 }
 
+export interface CreatorModelInterface extends ModelInterface {
+    readonly defaultItem : any
+    createItem( item: any ) : Promise<any>
+}
