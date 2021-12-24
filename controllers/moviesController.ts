@@ -108,15 +108,15 @@ const updateMovie = async({params, request, response} :
 // Route for delete a Movie
 const deleteMovie = async ({params, response} : {params : {id: string}, response : Response}) => {
     const { id } = params
-    let result = await Client.execute(`delete from movies where id = ?`, [id]);
-    if(result.affectedRows) {
-        response.body = {
+    const service = new MoviesService()
+    const request = await service.deleteItem(id)
+    if(request.affectedRows) {
+        return response.body = {
             status: true,
             data: {
                 id
             }
         }
-        return 
     }
     response.status = 404
     response.body = {
