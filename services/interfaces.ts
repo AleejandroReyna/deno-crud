@@ -15,3 +15,7 @@ export interface CreatorModelInterface extends ModelInterface {
 export interface UpdaterModelInterface extends CreatorModelInterface {
     updateItem(id: string | number, item: any) : Promise<any>
 }
+
+export interface DeleterModelInterface extends ModelInterface {
+    deleteItem(id: string | number) : Promise<any>
+}
