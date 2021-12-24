@@ -52,7 +52,7 @@ const createMovie = async({request, response} : {request : Request, response : R
         params = {...JSON.parse(value)}
     }
 
-    let data = await service.createItem(params)
+    let data : Movie | null = await service.createItem(params)
     if(data) {
         return response.body = {
             status: true,
@@ -89,7 +89,7 @@ const updateMovie = async({params, request, response} :
         const value = await body.value
         _params = {...JSON.parse(value)}
     }
-    let data = await service.updateItem(id, _params)
+    let data : Movie | null = await service.updateItem(id, _params)
 
     if(data) {
         return response.body = {
