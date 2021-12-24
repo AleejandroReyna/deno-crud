@@ -1,13 +1,14 @@
 import { 
     ModelInterface,
     GetterModelInterface,
-    UpdaterModelInterface
+    UpdaterModelInterface,
+    DeleterModelInterface
 } from './interfaces.ts'
 import { 
     Client 
 } from "../db/client.ts"
 
-export abstract class ModelService implements GetterModelInterface, UpdaterModelInterface {
+export abstract class ModelService implements GetterModelInterface, UpdaterModelInterface, DeleterModelInterface {
     abstract table : string
     abstract defaultItem : any
     
@@ -47,5 +48,9 @@ export abstract class ModelService implements GetterModelInterface, UpdaterModel
             }
         }
         return null
+    }
+
+    async deleteItem(id: string | number) : Promise<any> {
+        return Client.execute(`delete from ${this.table} where id = ?`, [id]);
     }
 }
