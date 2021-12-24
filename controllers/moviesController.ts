@@ -3,6 +3,7 @@ import { Client } from "../db/client.ts"
 import { Movie } from "../db/interfaces.ts"
 import { MoviesService } from '../services/moviesService.ts'
 import { ResponseService } from "../services/responseService.ts"
+import { RequestService } from "../services/requestService.ts"
 
 // Route for Get Movies 
 const getMovies = async ({ response }: { response : Response }) => {
@@ -13,46 +14,19 @@ const getMovies = async ({ response }: { response : Response }) => {
 
 // Route for Get Movie
 const getMovie = async ({params, response} : {params : {id: string}, response : Response }) => {
-    const service = new MoviesService()
+    const moviesService = new MoviesService()
     let responseService = new ResponseService(response)
-    return responseService.responseSingleData(await service.getItem(params.id))
+    return responseService.responseSingleData(await moviesService.getItem(params.id))
 }
 
 // Route for Create a Movie
 const createMovie = async({request, response} : {request : Request, response : Response}) => {
-    const body = request.body()
-    const service = new MoviesService()
-    let params : any;
-    if(!body.type) {
-        return response.body = {
-            status: false,
-            error: "no data"
-        }
-    }
-
-    if(body.type == "form-data") {
-        const value = body.value
-        const read = await value.read()
-        params = {...read.fields};
-    } else {
-        const value = await body.value
-        params = {...JSON.parse(value)}
-    }
-
-    let data : Movie | null = await service.createItem(params)
-    if(data) {
-        return response.body = {
-            status: true,
-            data
-        }
-    }
-    
-    response.status = 400
-    response.body = {
-        status: false,
-        error: "Invalid params"
-    }
-    
+    const moviesService = new MoviesService()
+    const requestService = new RequestService(request)
+    const responseService = new ResponseService(response)
+    return responseService.responseSingleData(
+        await moviesService.createItem(await requestService.getRequestData())
+    )
 }
 
 // Route for update a Movie
