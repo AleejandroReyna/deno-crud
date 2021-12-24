@@ -26,4 +26,17 @@ export class ResponseService {
             status: false
         }
     }
+
+    async responseDeletedData(data : any, error : string = "Item not found") {
+        if(data) {
+            return this.response.body = {
+                status: true
+            }
+        }
+        this.response.status = 404
+        return this.response.body = {
+            status: false,
+            error
+        }
+    }
 }
