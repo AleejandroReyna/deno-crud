@@ -2,15 +2,13 @@ import { Request, Response } from "../depts.ts";
 import { Client } from "../db/client.ts"
 import { Movie } from "../db/interfaces.ts"
 import { MoviesService } from '../services/moviesService.ts'
+import { ResponseService } from "../services/responseService.ts"
 
 // Route for Get Movies 
 const getMovies = async ({ response }: { response : Response }) => {
-    let service = new MoviesService()
-    const data : Movie[] = await service.getItems()
-    response.body = {
-        status: true,
-        data
-    };
+    let moviesService = new MoviesService()
+    let responseService = new ResponseService(response)
+    return responseService.responsePaginatedData(await moviesService.getItems())
 };
 
 // Route for Get Movie
