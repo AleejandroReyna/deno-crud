@@ -51,6 +51,7 @@ export abstract class ModelService implements GetterModelInterface, UpdaterModel
     }
 
     async deleteItem(id: string | number) : Promise<any> {
-        return Client.execute(`delete from ${this.table} where id = ?`, [id]);
+        const result = await Client.execute(`delete from ${this.table} where id = ?`, [id])
+        return result && result.affectedRows ? true : false;
     }
 }
