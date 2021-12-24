@@ -32,58 +32,21 @@ const createMovie = async({request, response} : {request : Request, response : R
 // Route for update a Movie
 const updateMovie = async({params, request, response} : 
                           {params: {id: string}, request : Request, response : Response}) => {
-    const body = request.body()
-    const service = new MoviesService()
-    const { id } = params
-    let _params : any
-    if(!body.type) {
-        return response.body = {
-            status: false,
-            error: "no data"
-        }
-    }
-    if(body.type == "form-data") {
-        const value = body.value
-        const read = await value.read()
-        _params = {...read.fields};
-    } else {
-        const value = await body.value
-        _params = {...JSON.parse(value)}
-    }
-    let data : Movie | null = await service.updateItem(id, _params)
-
-    if(data) {
-        return response.body = {
-            status: true,
-            data
-        }
-    }
-    
-    response.status = 400
-    response.body = {
-        status: false,
-        error: "Invalid params"
-    }
+    const moviesService = new MoviesService()
+    const requestService = new RequestService(request)
+    const responseService = new ResponseService(response)
+    return responseService.responseSingleData(
+        await moviesService.updateItem(params.id, await requestService.getRequestData())
+    )
 }
 
 // Route for delete a Movie
 const deleteMovie = async ({params, response} : {params : {id: string}, response : Response}) => {
-    const { id } = params
-    const service = new MoviesService()
-    const request = await service.deleteItem(id)
-    if(request.affectedRows) {
-        return response.body = {
-            status: true,
-            data: {
-                id
-            }
-        }
-    }
-    response.status = 404
-    response.body = {
-        status: false,
-        error: "Movie not found"
-    }
+    const moviesService = new MoviesService()
+    const responseService = new ResponseService(response)
+    return responseService.responseDeletedData(
+        await moviesService.deleteItem(params.id), "Movie not found"
+    )
 }
 
 export { getMovies, getMovie, createMovie, updateMovie, deleteMovie }
